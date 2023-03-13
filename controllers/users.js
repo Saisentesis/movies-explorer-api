@@ -5,6 +5,7 @@ const config = require('../utils/config');
 const BadRequestError = require('../errors/BadRequest');
 const NotFoundError = require('../errors/NotFound');
 const ConflictError = require('../errors/Conflict');
+const { BadRequestMessage, UserNotFoundMessage, ConflictMessage } = require('../utils/constants');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -21,11 +22,11 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+        next(new ConflictError(ConflictMessage));
         return;
       }
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError(BadRequestMessage));
         return;
       }
       next(err);
@@ -35,12 +36,12 @@ module.exports.createUser = (req, res, next) => {
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (!user) { throw new NotFoundError('Пользователь по указанному _id не найден.'); }
+      if (!user) { throw new NotFoundError(UserNotFoundMessage); }
       res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError(BadRequestMessage));
         return;
       }
       next(err);
@@ -54,12 +55,16 @@ module.exports.updateUser = (req, res, next) => {
     upsert: false,
   })
     .then((user) => {
-      if (!user) { throw new NotFoundError('Пользователь по указанному _id не найден.'); }
+      if (!user) { throw new NotFoundError(UserNotFoundMessage); }
       res.send(user);
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        next(new ConflictError(ConflictMessage));
+        return;
+      }
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError(BadRequestMessage));
         return;
       }
       next(err);

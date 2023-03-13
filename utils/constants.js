@@ -13,6 +13,26 @@ const Forbidden = 403;
 const NotFound = 404;
 const Conflict = 409;
 
+const BadRequestMessage = 'Переданы некорректные данные';
+const UnauthorizedMessage = 'Необходима авторизация';
+const ForbiddenMessage = 'Удалять можно только свои фильмы';
+const UserNotFoundMessage = 'Пользователь по указанному _id не найден.';
+const MovieNotFoundMessage = 'Фильм с указанным _id не найден.';
+const ConflictMessage = 'Пользователь с таким email уже существует';
+const PageNotFoundMessage = 'Неправильный путь';
+
 module.exports = {
-  BadRequest, Unauthorized, Forbidden, NotFound, Conflict, limiter,
+  BadRequest,
+  Unauthorized,
+  Forbidden,
+  NotFound,
+  Conflict,
+  limiter,
+  BadRequestMessage,
+  UnauthorizedMessage,
+  ForbiddenMessage,
+  UserNotFoundMessage,
+  MovieNotFoundMessage,
+  ConflictMessage,
+  PageNotFoundMessage,
 };
